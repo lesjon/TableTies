@@ -1,0 +1,12 @@
+<main>
+  <header>
+    <img src="../assets/logo.svg" alt="fairhouse"/>
+    Fairhouse
+  </header>
+  <section>
+    <app-housing-detail [selectedLocation]="selectedLocation"/>
+  </section>
+  <section>
+    <app-housing-list [locationList]="housingLocationList" (selectedLocationEvent)="updateSelectedLocation($event)"/>
+  </section>
+</main>
