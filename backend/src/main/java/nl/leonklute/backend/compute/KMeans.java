@@ -1,4 +1,4 @@
-package nl.leonklute.backend.service;
+package nl.leonklute.backend.compute;
 
 import java.util.Arrays;
 import java.util.Random;

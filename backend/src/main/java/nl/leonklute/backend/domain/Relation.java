@@ -1,12 +1,28 @@
 package nl.leonklute.backend.domain;
 
-public record Relation(Person person1, Person person2, String relation) {
-    static Relation fromString(String line) {
-        String[] parts = line.split(",\s*");
-        if (parts[0].compareTo(parts[1]) <= 0) {
-            return new Relation(new Person(parts[0]), new Person(parts[1]), parts[2]);
-        } else {
-            return new Relation(new Person(parts[1]), new Person(parts[0]), parts[2]);
-        }
-    }
+import jakarta.persistence.*;
+import lombok.Data;
+
+@Data
+@Entity
+public class Relation {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @ManyToOne
+    @JoinColumn(name = "person1_id")
+    private Person person1;
+
+    @ManyToOne
+    @JoinColumn(name = "person2_id")
+    private Person person2;
+
+    @Column(nullable = false)
+    private Double relationStrength;
+
+    @ManyToOne
+    @JoinColumn(name = "keycloak_user_id")
+    private KeycloakUser keycloakUser;
 }

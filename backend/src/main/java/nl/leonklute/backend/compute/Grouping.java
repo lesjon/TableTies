@@ -1,9 +1,12 @@
-package nl.leonklute.backend.service;
+package nl.leonklute.backend.compute;
+
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
-public class GroupingService {
-    public static int[] group(int[][] tables, int numDimensions, double[][] data) {
+@Component
+public class Grouping {
+    public int[] group(int[][] tables, int numDimensions, double[][] data) {
         KMeans kmeans = new KMeans(tables.length, numDimensions);
         kmeans.setData(data);
         int[] assignments = kmeans.assignToClusters();

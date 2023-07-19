@@ -1,17 +1,21 @@
 package nl.leonklute.backend.domain;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
 @Entity
-public class Person {
+public class TableGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(nullable = false)
-    private String name;
+    private Integer target;
+
+    @Column(nullable = false)
+    private Integer capacity;
 
     @ManyToOne
     @JoinColumn(name = "keycloak_user_id")

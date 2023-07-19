@@ -6,7 +6,6 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>TableTies</name>
-  <url>http://maven.apache.org</url>
   <modules>
     <module>backend</module>
   </modules>
