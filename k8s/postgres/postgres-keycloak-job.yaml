@@ -1,0 +1,49 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgres-keycloak-job
+spec:
+  template:
+    spec:
+      containers:
+        - name: postgres-keycloak-job
+          image: alpine
+          env:
+            - name: PGHOST
+              value: postgresql
+            - name: PGDATABASE
+              value: postgres
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: admin-user
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: admin-password
+            - name: KEYCLOAK_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: keycloak-user
+            - name: KEYCLOAK_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: keycloak-password
+            - name: KEYCLOAK_DB
+              value: keycloak
+          command:
+            - /bin/sh
+            - -c
+            - |
+              apk --no-cache add postgresql-client &&
+              psql -v ON_ERROR_STOP=1 <<-EOSQL
+                  CREATE USER $KEYCLOAK_USER WITH PASSWORD '$KEYCLOAK_PASSWORD';
+                  CREATE DATABASE $KEYCLOAK_DB;
+                  GRANT ALL PRIVILEGES ON DATABASE $KEYCLOAK_DB TO $KEYCLOAK_USER;
+              EOSQL
+      restartPolicy: Never
+  backoffLimit: 0

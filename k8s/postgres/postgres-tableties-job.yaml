@@ -1,0 +1,57 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgres-tableties-job
+spec:
+  template:
+    spec:
+      volumes:
+        - name: init-tableties
+          configMap:
+            name: init-tableties.sql
+            items:
+              - key: init-tableties.sql
+                path: init-tableties.sql
+      containers:
+        - name: postgres-tableties-job
+          image: alpine
+          env:
+            - name: PGHOST
+              value: postgresql
+            - name: PGDATABASE
+              value: postgres
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: admin-user
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: admin-password
+            - name: TABLETIES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: tableties-user
+            - name: TABLETIES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: tableties-password
+            - name: TABLETIES_DB
+              value: table_ties
+          volumeMounts:
+            - mountPath: /init-db/init-tableties.sql
+              name: init-tableties
+              subPath: init-tableties.sql
+          command:
+            - /bin/sh
+            - -c
+            - |
+              apk --no-cache add postgresql-client &&
+              psql -v ON_ERROR_STOP=1 -c "CREATE USER $TABLETIES_USER WITH PASSWORD '$TABLETIES_PASSWORD';" &&
+              psql -v ON_ERROR_STOP=1 -f /init-db/init-tableties.sql
+      restartPolicy: Never
+  backoffLimit: 0
