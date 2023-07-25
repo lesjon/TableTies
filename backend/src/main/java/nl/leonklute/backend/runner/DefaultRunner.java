@@ -5,13 +5,11 @@ import nl.leonklute.backend.TableSetter;
 import nl.leonklute.backend.domain.Event;
 import nl.leonklute.backend.domain.KeycloakUser;
 import nl.leonklute.backend.service.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
+//TODO: make this a test @Component
 public class DefaultRunner implements ApplicationRunner {
     private final KeycloakUserService keycloakUserService;
     private final PeopleService peopleService;
@@ -20,7 +18,7 @@ public class DefaultRunner implements ApplicationRunner {
     private final TableGroupService tableGroupService;
     private final EventService eventService;
 
-    @Autowired
+//    @Autowired
     public DefaultRunner(KeycloakUserService keycloakUserService, PeopleService peopleService,
                          RelationService relationService, TableSetter tableSetter, TableGroupService tableGroupService, EventService eventService) {
         this.keycloakUserService = keycloakUserService;
