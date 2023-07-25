@@ -5,19 +5,16 @@ import lombok.Data;
 
 @Data
 @Entity
-public class TableGroup {
+public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
-    private Integer target;
-
-    @Column(nullable = false)
-    private Integer capacity;
+    @Column(nullable = false, unique = true)
+    private String name;
 
     @ManyToOne
-    @JoinColumn(name = "event_id")
-    private Event event;
+    @JoinColumn(name = "keycloak_user_id")
+    private KeycloakUser keycloakUser;
 }

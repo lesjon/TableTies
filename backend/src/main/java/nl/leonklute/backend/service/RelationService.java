@@ -1,6 +1,7 @@
 package nl.leonklute.backend.service;
 
 import lombok.extern.slf4j.Slf4j;
+import nl.leonklute.backend.domain.Event;
 import nl.leonklute.backend.domain.KeycloakUser;
 import nl.leonklute.backend.domain.Person;
 import nl.leonklute.backend.domain.Relation;
@@ -33,10 +34,10 @@ public class RelationService {
         this.personRepository = personRepository;
     }
 
-    public void loadDefaults(KeycloakUser keycloakUser) throws IOException {
+    public void loadDefaults(Event keycloakUser) throws IOException {
         List<Relation> relations = readRelationsFromFile(defaultRelations.getFile().getAbsolutePath());
         log.debug("Loaded {} from file", relations);
-        List<Relation> dbRelations = relationRepository.findAllByKeycloakUser(keycloakUser);
+        List<Relation> dbRelations = relationRepository.findAllByEvent(keycloakUser);
         for (var relation : relations) {
             String name1 = relation.getPerson1().getName();
             String name2 = relation.getPerson2().getName();
@@ -45,10 +46,15 @@ public class RelationService {
                     .filter(dbRelation -> dbRelation.getPerson2().getName().equals(name2))
                     .findFirst();
             relation = foundRelation.orElse(relation);
-            relation.setKeycloakUser(keycloakUser);
-            relationRepository.save(relation);
+            relation.setEvent(keycloakUser);
+            create(relation);
         }
     }
+
+    public Relation create(Relation relation) {
+        return relationRepository.save(relation);
+    }
+
     public List<Relation> readRelationsFromFile(String relationsFileName) throws IOException {
         List<Relation> relations = new ArrayList<>();
         try (var relationsFile = new BufferedReader(new FileReader(relationsFileName))) {
@@ -67,7 +73,7 @@ public class RelationService {
         return relations;
     }
 
-    public List<Relation> getAllRelationsByUser(KeycloakUser keycloakUser) {
-        return relationRepository.findAllByKeycloakUser(keycloakUser);
+    public List<Relation> getAllRelationsByUser(Event keycloakUser) {
+        return relationRepository.findAllByEvent(keycloakUser);
     }
 }

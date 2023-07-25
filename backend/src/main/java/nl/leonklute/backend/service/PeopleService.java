@@ -1,5 +1,6 @@
 package nl.leonklute.backend.service;
 
+import nl.leonklute.backend.domain.Event;
 import nl.leonklute.backend.domain.KeycloakUser;
 import nl.leonklute.backend.domain.Person;
 import nl.leonklute.backend.repository.PersonRepository;
@@ -39,17 +40,21 @@ public class PeopleService {
         return people;
     }
 
-    public void loadDefaults(KeycloakUser keycloakUser) throws IOException {
+    public void loadDefaults(Event event) throws IOException {
         List<Person> people = readPeopleFromFile(defaultPeople.getFile().getAbsolutePath());
         for (var person : people) {
             person = personRepository.getByName(person.getName()).orElse(person);
             person.setName(person.getName());
-            person.setKeycloakUser(keycloakUser);
-            personRepository.save(person);
+            person.setEvent(event);
+            create(person);
         }
     }
 
-    public List<Person> getAllPeopleByUser(KeycloakUser keycloakUser) {
-        return personRepository.findAllByKeycloakUser(keycloakUser);
+    public Person create(Person person) {
+        return personRepository.save(person);
+    }
+
+    public List<Person> getAllPeopleByEvent(Event event) {
+        return personRepository.findAllByEvent(event);
     }
 }

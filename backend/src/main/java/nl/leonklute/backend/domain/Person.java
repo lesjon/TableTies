@@ -14,6 +14,6 @@ public class Person {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "keycloak_user_id")
-    private KeycloakUser keycloakUser;
+    @JoinColumn(name = "event_id")
+    private Event event;
 }

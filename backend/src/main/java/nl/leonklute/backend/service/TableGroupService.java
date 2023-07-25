@@ -1,5 +1,6 @@
 package nl.leonklute.backend.service;
 
+import nl.leonklute.backend.domain.Event;
 import nl.leonklute.backend.domain.KeycloakUser;
 import nl.leonklute.backend.domain.TableGroup;
 import nl.leonklute.backend.repository.TableGroupRepository;
@@ -26,11 +27,11 @@ public class TableGroupService {
         this.tableGroupRepository = tableGroupRepository;
     }
 
-    public void loadDefaults(KeycloakUser keycloakUser) throws IOException {
+    public void loadDefaults(Event event) throws IOException {
         List<TableGroup> tableGroups = readTablesFromFile(defaultTables.getFile().getAbsolutePath());
         for (TableGroup tableGroup : tableGroups) {
-            tableGroup.setKeycloakUser(keycloakUser);
-            tableGroupRepository.save(tableGroup);
+            tableGroup.setEvent(event);
+            create(tableGroup);
         }
     }
     private List<TableGroup> readTablesFromFile(String tablesFileName) throws IOException {
@@ -48,7 +49,11 @@ public class TableGroupService {
         return tableGroups;
     }
 
-    public List<TableGroup> getAllTablesByUser(KeycloakUser keycloakUser) {
-        return tableGroupRepository.findAllByKeycloakUser(keycloakUser);
+    public List<TableGroup> getAllTablesByEvent(Event event) {
+        return tableGroupRepository.findAllByEvent(event);
+    }
+
+    public TableGroup create(TableGroup tableGroup) {
+        return tableGroupRepository.save(tableGroup);
     }
 }

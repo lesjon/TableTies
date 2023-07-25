@@ -1,14 +1,15 @@
 package nl.leonklute.backend.repository;
 
 import nl.leonklute.backend.domain.Event;
-import nl.leonklute.backend.domain.TableGroup;
 import nl.leonklute.backend.domain.KeycloakUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface TableGroupRepository extends JpaRepository<TableGroup, Integer> {
-    List<TableGroup> findAllByEvent(Event event);
+public interface EventRepository extends JpaRepository<Event, Integer> {
+    Optional<Event> findByName(String eventName);
+    List<Event> findAllByKeycloakUser(KeycloakUser keycloakUser);
 }

@@ -23,6 +23,6 @@ public class Relation {
     private Double relationStrength;
 
     @ManyToOne
-    @JoinColumn(name = "keycloak_user_id")
-    private KeycloakUser keycloakUser;
+    @JoinColumn(name = "event_id")
+    private Event event;
 }
