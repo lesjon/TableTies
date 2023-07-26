@@ -3,19 +3,30 @@ package nl.leonklute.backend.service;
 import nl.leonklute.backend.domain.KeycloakUser;
 import nl.leonklute.backend.repository.KeycloakUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+
 @Service
 public class KeycloakUserService {
+    public static final String DEFAULT_USER = "default";
+    public static final String DEFAULT_PASSWORD = "password";
 
-    private final String DEFAULT_USER = "default";
     private final KeycloakUserRepository keycloakUserRepository;
 
+    private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
+
     @Autowired
-    public KeycloakUserService(KeycloakUserRepository keycloakUserRepository) {
+    public KeycloakUserService(KeycloakUserRepository keycloakUserRepository, InMemoryUserDetailsManager inMemoryUserDetailsManager) {
         this.keycloakUserRepository = keycloakUserRepository;
+        this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
+        UserDetails defaultUser = this.inMemoryUserDetailsManager.loadUserByUsername(DEFAULT_USER);
+        KeycloakUser user = this.getUser(DEFAULT_USER).orElseGet(KeycloakUser::new);
+        user.setUsername(DEFAULT_USER);
+        this.keycloakUserRepository.save(user);
     }
 
     public void createDefaultUser(){
