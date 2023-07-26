@@ -14,6 +14,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PeopleService {
@@ -56,5 +57,9 @@ public class PeopleService {
 
     public List<Person> getAllPeopleByEvent(Event event) {
         return personRepository.findAllByEvent(event);
+    }
+
+    public Optional<Person> getPersonByName(String name) {
+        return personRepository.getByName(name);
     }
 }

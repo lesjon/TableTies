@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { EventForm} from "../form/EventForm";
+import {Component} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {EventForm} from "../form/EventForm";
+import {UserService} from "../user.service";
+import {mergeMap} from "rxjs";
+import {EventService} from "../event.service";
 
 @Component({
   selector: 'app-new-event',
@@ -8,26 +11,32 @@ import { EventForm} from "../form/EventForm";
   styleUrls: ['./new-event.component.css']
 })
 export class NewEventComponent {
-  model = new EventForm('', {username: ''});
+  model = new EventForm('', '');
   submitted = false;
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,
+              private userService: UserService,
+              private eventService: EventService) { }
   onSubmit() {
-    this.http.post('http://localhost:8080/api/event', this.model)
-      .subscribe(
-        (val) => {
-          console.log("POST call successful value returned in body", val);
-          this.model = val as EventForm;
-          this.submitted = true;
-        },
-        response => {
-          console.log("POST call in error", response);
-        },
-        () => {
-          console.log("The POST observable is now completed.");
+    if(this.model.user == '') {
+      this.userService.getUser().pipe(
+        mergeMap(response => {
+          this.model.user = response.username;
+          return this.eventService.postEvent(this.model);
+        })
+      ).subscribe({
+        next: data => console.log('Received: ', data),
+        error: error => console.log('Error: ', error),
+      });
+    } else {
+      this.eventService.postEvent(this.model)
+        .subscribe({
+          next: data => console.log('Received: ', data),
+          error: error => console.log('Error: ', error),
         });
+    }
   }
 
   clear() {
-    this.model = new EventForm('', {username: ''});
+    this.model = new EventForm('', '');
   }
 }

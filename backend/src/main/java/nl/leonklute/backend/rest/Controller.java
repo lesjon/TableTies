@@ -51,9 +51,14 @@ public class Controller {
     }
 
     @PostMapping(value = "/event", produces = "application/json")
-    public Event createEvent(@AuthenticationPrincipal UserDetails userDetails, Event event) {
+    public Event createEvent(@AuthenticationPrincipal UserDetails userDetails, @RequestBody EventRequest eventRequest) {
+        log.debug("Creating event for user {}", userDetails.getUsername());
         var user = getKeycloakUser(userDetails);
+        log.debug("Creating event for user {}", user);
+        var event = new Event();
         event.setKeycloakUser(user);
+        event.setName(eventRequest.getName());
+        log.debug("Creating event {}", event);
         return eventService.create(event);
     }
 
@@ -66,11 +71,15 @@ public class Controller {
     }
 
     @PostMapping(value = "/event/{eventId}/table", produces = "application/json")
-    public TableGroup createTable(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer eventId, TableGroup tableGroup) {
+    public TableGroup createTable(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer eventId, @RequestBody TableGroupRequest tableGroupRequest) {
         var user = getKeycloakUser(userDetails);
         Event event = getEvent(eventId);
         validateEvent(event, user);
-        validateTableGroup(tableGroup, event);
+        validateTableGroup(tableGroupRequest, event);
+        var tableGroup = new TableGroup();
+        tableGroup.setEvent(event);
+        tableGroup.setCapacity(tableGroupRequest.getCapacity());
+        tableGroup.setTarget(tableGroupRequest.getTarget());
         return tableGroupService.create(tableGroup);
     }
 
@@ -93,10 +102,13 @@ public class Controller {
         return peopleService.getAllPeopleByEvent(event);
     }
     @PostMapping(value = "/event/{eventId}/person", produces = "application/json")
-    public Person createPerson(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer eventId, Person person) {
+    public Person createPerson(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer eventId, @RequestBody PersonRequest personRequest) {
         var user = getKeycloakUser(userDetails);
         Event event = getEvent(eventId);
         validateEvent(event, user);
+        var person = new Person();
+        person.setEvent(event);
+        person.setName(personRequest.getName());
         return peopleService.create(person);
     }
 
@@ -108,11 +120,17 @@ public class Controller {
         return relationService.getAllRelationsByUser(event);
     }
     @PostMapping(value = "/event/{eventId}/relation", produces = "application/json")
-    public Relation createRelation(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer eventId, Relation relation) {
+    public Relation createRelation(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer eventId, @RequestBody RelationRequest relationRequest) {
         var user = getKeycloakUser(userDetails);
         Event event = getEvent(eventId);
         validateEvent(event, user);
-        validateRelation(relation, event);
+        validateRelation(relationRequest, event);
+        var relation = new Relation();
+        relation.setEvent(event);
+        relation.setPerson1(peopleService.getPersonByName(relationRequest.getPerson1())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("%s not found", relationRequest.getPerson1()))));
+        relation.setPerson2(peopleService.getPersonByName(relationRequest.getPerson2())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("%s not found", relationRequest.getPerson2()))));
         return relationService.create(relation);
     }
 
@@ -130,14 +148,14 @@ public class Controller {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authorized");
         }
     }
-    private void validateRelation(Relation relation, Event event) {
-        if(!relation.getEvent().equals(event)) {
+    private void validateRelation(RelationRequest relation, Event event) {
+        if(!relation.getEventId().equals(event.getId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Relation does not belong to event");
         }
     }
 
-    private void validateTableGroup(TableGroup tableGroup, Event event) {
-        if(!tableGroup.getEvent().equals(event)) {
+    private void validateTableGroup(TableGroupRequest tableGroup, Event event) {
+        if(!tableGroup.getEventId().equals(event.getId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Table does not belong to event");
         }
     }

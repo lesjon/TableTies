@@ -10,6 +10,6 @@ export class PeopleService {
   constructor(private http: HttpClient) { }
 
   getPeople() {
-    return this.http.get<Person[]>('http://localhost:8080/api/person');
+    return this.http.get<Person[]>('http://localhost:8080/api/person', { withCredentials: true });
   }
 }

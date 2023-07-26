@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import { LoginForm } from "../form/LoginForm";
+import { UserForm } from "../form/UserForm";
 import KeycloakUser from "../domain/KeycloakUser";
+import {UserService} from "../user.service";
 
 @Component({
   selector: 'app-login',
@@ -9,7 +10,7 @@ import KeycloakUser from "../domain/KeycloakUser";
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  model = new LoginForm('', '');
+  model = new UserForm('', '');
   loggedInUser?: KeycloakUser = undefined;
   onSubmit() {
     console.log("loggin in with: ", this.model);
@@ -19,10 +20,13 @@ export class LoginComponent {
     return this.http.post<any>('http://localhost:8080/login', body.toString(), { headers: headers, withCredentials: true })
       .subscribe(response => {console.log(response)});
   }
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private userService: UserService) { }
 
   getLoggedInUser() {
-    this.http.get('http://localhost:8080/api/user', { withCredentials: true })
-      .subscribe(response => {this.loggedInUser = response as KeycloakUser});
+    this.userService.getUser()
+      .subscribe({
+        next: data => this.loggedInUser = data,
+        error: error => this.loggedInUser = undefined,
+      });
   }
 }
