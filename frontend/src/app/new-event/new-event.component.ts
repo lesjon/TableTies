@@ -1,9 +1,9 @@
 import {Component} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {EventForm} from "../form/EventForm";
-import {UserService} from "../user.service";
+import {UserService} from "../service/user.service";
 import {mergeMap} from "rxjs";
-import {EventService} from "../event.service";
+import {EventService} from "../service/event.service";
 
 @Component({
   selector: 'app-new-event',

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PeopleService } from '../people.service';
+import { PeopleService } from '../service/people.service';
 import Person from "../domain/Person";
 @Component({
   selector: 'app-people-list',

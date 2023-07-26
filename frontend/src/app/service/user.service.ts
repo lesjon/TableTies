@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import KeycloakUser from "./domain/KeycloakUser";
+import KeycloakUser from "../domain/KeycloakUser";
 
 @Injectable({
   providedIn: 'root'

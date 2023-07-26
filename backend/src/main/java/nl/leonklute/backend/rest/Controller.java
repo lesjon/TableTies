@@ -34,6 +34,7 @@ public class Controller {
         this.eventService = eventService;
         this.tableSetter = tableSetter;
     }
+
     @GetMapping(value = "/info", produces = "application/json")
     public String hello() {
         return "Table ties api";
@@ -94,6 +95,7 @@ public class Controller {
         int[] groups = tableSetter.createTables(people, relations, tables);
         return Arrays.stream(groups).boxed().toList();
     }
+
     @GetMapping(value = "/event/{eventId}/person", produces = "application/json")
     public List<Person> getPeople(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer eventId) {
         var user = getKeycloakUser(userDetails);
@@ -101,6 +103,7 @@ public class Controller {
         validateEvent(event, user);
         return peopleService.getAllPeopleByEvent(event);
     }
+
     @PostMapping(value = "/event/{eventId}/person", produces = "application/json")
     public Person createPerson(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer eventId, @RequestBody PersonRequest personRequest) {
         var user = getKeycloakUser(userDetails);
@@ -119,6 +122,7 @@ public class Controller {
         validateEvent(event, user);
         return relationService.getAllRelationsByUser(event);
     }
+
     @PostMapping(value = "/event/{eventId}/relation", produces = "application/json")
     public Relation createRelation(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer eventId, @RequestBody RelationRequest relationRequest) {
         var user = getKeycloakUser(userDetails);

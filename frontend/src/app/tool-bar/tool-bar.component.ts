@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {EventService} from "../event.service";
+import {EventService} from "../service/event.service";
 import Event from "../domain/Event";
 
 @Component({

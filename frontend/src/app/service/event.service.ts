@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import Event from "./domain/Event";
-import {EventForm} from "./form/EventForm";
+import Event from "../domain/Event";
+import {EventForm} from "../form/EventForm";
 
 @Injectable({
   providedIn: 'root'

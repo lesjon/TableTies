@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { UserForm } from "../form/UserForm";
 import KeycloakUser from "../domain/KeycloakUser";
-import {UserService} from "../user.service";
+import {UserService} from "../service/user.service";
 
 @Component({
   selector: 'app-login',
