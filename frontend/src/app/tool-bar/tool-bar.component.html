@@ -1,0 +1,11 @@
+<mat-toolbar>
+  <button mat-icon-button (click)="$event.stopPropagation(); toggleSidenav()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <img src="../../assets/TableTies-256x256.png" alt="table ties" width="40px"/>
+  <span>Table Ties</span>
+  <mat-tab-group>
+    <mat-tab *ngFor="let event of events" label="{{event.name}}"></mat-tab>
+    <mat-tab label="new"/>
+  </mat-tab-group>
+</mat-toolbar>

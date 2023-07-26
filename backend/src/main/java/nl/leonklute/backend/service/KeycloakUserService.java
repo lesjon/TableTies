@@ -17,14 +17,12 @@ public class KeycloakUserService {
 
     private final KeycloakUserRepository keycloakUserRepository;
 
-    private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
-
     @Autowired
-    public KeycloakUserService(KeycloakUserRepository keycloakUserRepository, InMemoryUserDetailsManager inMemoryUserDetailsManager) {
+    public KeycloakUserService(KeycloakUserRepository keycloakUserRepository,
+                               InMemoryUserDetailsManager inMemoryUserDetailsManager) {
         this.keycloakUserRepository = keycloakUserRepository;
-        this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
-        UserDetails defaultUser = this.inMemoryUserDetailsManager.loadUserByUsername(DEFAULT_USER);
-        KeycloakUser user = this.getUser(DEFAULT_USER).orElseGet(KeycloakUser::new);
+        UserDetails defaultUser = inMemoryUserDetailsManager.loadUserByUsername(DEFAULT_USER);
+        KeycloakUser user = this.getUser(defaultUser.getUsername()).orElseGet(KeycloakUser::new);
         user.setUsername(DEFAULT_USER);
         this.keycloakUserRepository.save(user);
     }

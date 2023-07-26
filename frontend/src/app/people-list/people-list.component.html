@@ -1,0 +1,6 @@
+<p>people-list works!</p>
+<button (click)="getPeople()">Search</button>
+
+<article *ngFor="let person of people">
+  <p>{{person.id}}, {{person.name}}</p>
+</article>

@@ -2,8 +2,10 @@ package nl.leonklute.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,24 +28,48 @@ class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
+        http.cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource));
+        http.csrf(AbstractHttpConfigurer::disable);
         http
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests
-                                .anyRequest().authenticated()
+                                .requestMatchers(HttpMethod.OPTIONS).permitAll()
+                                .requestMatchers("/login", "/register").permitAll()
+                                .requestMatchers("/api/**").authenticated()
+
+                )
+                .exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
+                        httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(
+                                (request, response, authException) -> response.setStatus(401))
                 )
                 .httpBasic(withDefaults())
-                .formLogin(withDefaults());
-        http.cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource));
+                .formLogin(formLogin -> {
+                    formLogin.successHandler((request, response, authentication) -> {
+                        response.setStatus(200);
+                    });
+                    formLogin.failureHandler((request, response, exception) -> {
+                        response.setStatus(401);
+                    });
+                });
         return http.build();
     }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:4200"));
-        configuration.setAllowedMethods(List.of("GET","POST"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        configuration.setAllowedMethods(List.of("GET", "POST", "DELETE", "OPTIONS"));
+        configuration.setAllowCredentials(true);
+        source.registerCorsConfiguration("/api/**", configuration);
+
+        CorsConfiguration loginConfiguration = new CorsConfiguration();
+        loginConfiguration.setAllowedOrigins(List.of("http://localhost:4200"));
+        loginConfiguration.setAllowedMethods(List.of("POST", "OPTIONS"));
+        loginConfiguration.setAllowedHeaders(List.of("*"));
+        loginConfiguration.setAllowCredentials(true);
+        source.registerCorsConfiguration("/login", loginConfiguration);
         return source;
     }
 

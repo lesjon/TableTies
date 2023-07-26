@@ -1,13 +1,12 @@
 <main>
   <header>
-    <img src="../assets/logo.svg" alt="fairhouse"/>
-    Fairhouse
+    <app-tool-bar />
   </header>
   <section>
-    <app-housing-detail [selectedLocation]="selectedLocation"/>
+    <app-login />
   </section>
   <section>
-    <app-housing-list [locationList]="housingLocationList" (selectedLocationEvent)="updateSelectedLocation($event)"/>
+    <app-new-event />
   </section>
   <section>
     <app-people-list />
