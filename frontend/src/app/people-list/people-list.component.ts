@@ -10,7 +10,7 @@ export class PeopleListComponent {
   people: any[] = [];
   constructor(private peopleService: PeopleService) { }
   getPeople() {
-    this.peopleService.getPeople()
+    this.peopleService.getPeople(0)
       .subscribe((data: Person[])=>{
       console.log(data);
       this.people = data;

@@ -1,0 +1,13 @@
+<section>
+  <mat-card *ngFor="let person of people">
+    <mat-card-content>{{person.name}}</mat-card-content>
+  </mat-card>
+  <mat-card>
+    <mat-card-content>
+      <mat-form-field>
+        <input matInput #nameInput placeholder="Name">
+      </mat-form-field>
+      <button (click)="addPerson(nameInput)" mat-raised-button>Add</button>
+    </mat-card-content>
+  </mat-card>
+</section>

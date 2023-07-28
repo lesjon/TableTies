@@ -2,13 +2,7 @@
   <header>
     <app-tool-bar />
   </header>
-  <section>
-    <app-login />
-  </section>
-  <section>
-    <app-new-event />
-  </section>
-  <section>
-    <app-people-list />
-  </section>
+  <mat-tab-nav-panel #tabPanel>
+    <router-outlet />
+  </mat-tab-nav-panel>
 </main>

@@ -62,11 +62,19 @@ public class Controller {
         log.debug("Creating event {}", event);
         return eventService.create(event);
     }
+    @GetMapping(value = "/event/{eventId}", produces = "application/json")
+    public Event getEvent(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer eventId) {
+        log.debug("Getting event {} for user {}", eventId, userDetails.getUsername());
+        var user = getKeycloakUser(userDetails);
+        Event event = getEventById(eventId);
+        validateEvent(event, user);
+        return event;
+    }
 
     @GetMapping(value = "/event/{eventId}/table", produces = "application/json")
     public List<TableGroup> getTables(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer eventId) {
         var user = getKeycloakUser(userDetails);
-        Event event = getEvent(eventId);
+        Event event = getEventById(eventId);
         validateEvent(event, user);
         return tableGroupService.getAllTablesByEvent(event);
     }
@@ -74,7 +82,7 @@ public class Controller {
     @PostMapping(value = "/event/{eventId}/table", produces = "application/json")
     public TableGroup createTable(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer eventId, @RequestBody TableGroupRequest tableGroupRequest) {
         var user = getKeycloakUser(userDetails);
-        Event event = getEvent(eventId);
+        Event event = getEventById(eventId);
         validateEvent(event, user);
         validateTableGroup(tableGroupRequest, event);
         var tableGroup = new TableGroup();
@@ -99,7 +107,7 @@ public class Controller {
     @GetMapping(value = "/event/{eventId}/person", produces = "application/json")
     public List<Person> getPeople(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer eventId) {
         var user = getKeycloakUser(userDetails);
-        Event event = getEvent(eventId);
+        Event event = getEventById(eventId);
         validateEvent(event, user);
         return peopleService.getAllPeopleByEvent(event);
     }
@@ -107,7 +115,7 @@ public class Controller {
     @PostMapping(value = "/event/{eventId}/person", produces = "application/json")
     public Person createPerson(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer eventId, @RequestBody PersonRequest personRequest) {
         var user = getKeycloakUser(userDetails);
-        Event event = getEvent(eventId);
+        Event event = getEventById(eventId);
         validateEvent(event, user);
         var person = new Person();
         person.setEvent(event);
@@ -118,7 +126,7 @@ public class Controller {
     @GetMapping(value = "/event/{eventId}/relation", produces = "application/json")
     public List<Relation> getRelations(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer eventId) {
         var user = getKeycloakUser(userDetails);
-        Event event = getEvent(eventId);
+        Event event = getEventById(eventId);
         validateEvent(event, user);
         return relationService.getAllRelationsByUser(event);
     }
@@ -126,7 +134,7 @@ public class Controller {
     @PostMapping(value = "/event/{eventId}/relation", produces = "application/json")
     public Relation createRelation(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer eventId, @RequestBody RelationRequest relationRequest) {
         var user = getKeycloakUser(userDetails);
-        Event event = getEvent(eventId);
+        Event event = getEventById(eventId);
         validateEvent(event, user);
         validateRelation(relationRequest, event);
         var relation = new Relation();
@@ -143,12 +151,13 @@ public class Controller {
         return user.orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
     }
 
-    private Event getEvent(@PathVariable Integer eventId) {
+    private Event getEventById(Integer eventId) {
         return eventService.getEvent(eventId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
     }
 
     private void validateEvent(Event event, KeycloakUser user) {
-        if(event.getKeycloakUser().equals(user)) {
+        log.debug("Validating event {} for user {}", event, user);
+        if(!event.getKeycloakUser().equals(user)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authorized");
         }
     }

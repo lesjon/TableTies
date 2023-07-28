@@ -9,7 +9,11 @@ export class PeopleService {
 
   constructor(private http: HttpClient) { }
 
-  getPeople() {
-    return this.http.get<Person[]>('http://localhost:8080/api/person', { withCredentials: true });
+  getPeople(eventId: number) {
+    return this.http.get<Person[]>(`http://localhost:8080/api/event/${eventId}/person`, { withCredentials: true });
+  }
+
+  createPerson(eventId: number, name: string) {
+    return this.http.post<Person>(`http://localhost:8080/api/event/${eventId}/person`, { eventId, name }, { withCredentials: true });
   }
 }

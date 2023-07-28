@@ -17,4 +17,8 @@ export class EventService {
   postEvent(event: EventForm) {
     return this.http.post<Event>('http://localhost:8080/api/event', event, { withCredentials: true });
   }
+
+  getEvent(id: number) {
+    return this.http.get<Event>(`http://localhost:8080/api/event/${id}`, { withCredentials: true });
+  }
 }

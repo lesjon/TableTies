@@ -5,14 +5,18 @@ import {AppComponent} from './app.component';
 import {NgOptimizedImage} from "@angular/common";
 import {MaterialModule} from "./material/material.module";
 
-
+import {AppRoutingModule} from "./app-routing/app-routing.module";
 import {HttpClientModule} from '@angular/common/http';
 import {PeopleListComponent} from './people-list/people-list.component';
 import {ToolBarComponent} from './tool-bar/tool-bar.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NewEventComponent} from './new-event/new-event.component';
 import {FormsModule} from "@angular/forms";
-import { LoginComponent } from './login/login.component';
+import {LoginComponent} from './login/login.component';
+import { HomeComponent } from './home/home.component';
+import { EventComponent } from './event/event.component';
+import {MatCardModule} from "@angular/material/card";
+import {MatInputModule} from "@angular/material/input";
 
 @NgModule({
   declarations: [
@@ -20,7 +24,9 @@ import { LoginComponent } from './login/login.component';
     PeopleListComponent,
     ToolBarComponent,
     NewEventComponent,
-    LoginComponent
+    LoginComponent,
+    HomeComponent,
+    EventComponent
   ],
   imports: [
     MaterialModule,
@@ -28,7 +34,10 @@ import { LoginComponent } from './login/login.component';
     NgOptimizedImage,
     HttpClientModule,
     BrowserAnimationsModule,
-    FormsModule
+    FormsModule,
+    AppRoutingModule,
+    MatCardModule,
+    MatInputModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,26 +1,62 @@
-import { Component } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {EventService} from "../service/event.service";
 import Event from "../domain/Event";
+import KeycloakUser from "../domain/KeycloakUser";
+import {UserService} from "../service/user.service";
+import {Router} from "@angular/router";
+import {MatTabChangeEvent} from '@angular/material/tabs';
+import {Subscription} from "rxjs";
+
 
 @Component({
   selector: 'app-tool-bar',
   templateUrl: './tool-bar.component.html',
   styleUrls: ['./tool-bar.component.css']
 })
-export class ToolBarComponent {
+export class ToolBarComponent implements OnInit, OnDestroy{
   events: Event[] = [];
-  constructor(private eventService: EventService) {
-    this.getEvents();
+  user: KeycloakUser | null = null;
+  private subscription: Subscription | null = null;
+  selected = 0;
+  constructor(private eventService: EventService,
+              private userService: UserService,
+              private router: Router) {
+  }
+
+  ngOnInit(): void {
+    this.subscription = this.userService.user$.subscribe(user => {
+      this.user = user;
+      this.getEvents();
+    });
+  }
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
   }
   toggleSidenav() {
     console.log("Toggle Sidenav");
   }
 
   getEvents() {
-    this.eventService.getEvents()
-      .subscribe(events => {
-      console.log(events);
-      this.events = events;
-    });
+    this.eventService.getEvents().subscribe(events => this.events = events);
+  }
+
+  toggleUserMenu() {
+    if(!this.user){
+      this.router.navigate(['login']);
+    }
+  }
+
+  urlFromEvent(event: Event) {
+    return `/event/${event.id}`;
+  }
+
+  onTabChange(event: MatTabChangeEvent) {
+    if (event.index === this.events.length) {  // If last tab (new) is selected
+      this.router.navigate(['event/create']);
+    } else {
+      const selectedEvent = this.events[event.index];
+      const url = this.urlFromEvent(selectedEvent);
+      this.router.navigate([url]);
+    }
   }
 }

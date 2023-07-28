@@ -12,13 +12,21 @@ import {UserService} from "../service/user.service";
 export class LoginComponent {
   model = new UserForm('', '');
   loggedInUser?: KeycloakUser = undefined;
+  failureMessage?: string = undefined;
   onSubmit() {
-    console.log("loggin in with: ", this.model);
     const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });    let body = new URLSearchParams();
     body.set('username', this.model.username);
     body.set('password', this.model.password);
     return this.http.post<any>('http://localhost:8080/login', body.toString(), { headers: headers, withCredentials: true })
-      .subscribe(response => {console.log(response)});
+      .subscribe({
+        next: data => {
+          this.getLoggedInUser();
+        },
+        error: error => {
+          console.log(error);
+          this.failureMessage = "Could not log in ";
+        }
+      });
   }
   constructor(private http: HttpClient, private userService: UserService) { }
 

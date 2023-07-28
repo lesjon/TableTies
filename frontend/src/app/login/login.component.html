@@ -26,8 +26,7 @@
       <button type="submit" class="btn btn-success" [disabled]="!loginForm.form.valid">Login</button>
     </form>
   </div>
-  <div>
-    <button type="button" class="btn btn-primary" (click)="getLoggedInUser()">Get logged in user</button>
-    <span>{{loggedInUser}}</span>
+  <div *ngIf="failureMessage">
+    <span>{{failureMessage}}</span>
   </div>
 </div>
