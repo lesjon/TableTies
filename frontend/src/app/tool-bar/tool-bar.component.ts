@@ -24,6 +24,7 @@ export class ToolBarComponent implements OnInit, OnDestroy{
   }
 
   ngOnInit(): void {
+    this.userService.getUser();
     this.subscription = this.userService.user$.subscribe(user => {
       this.user = user;
       this.getEvents();
