@@ -9,6 +9,12 @@ import {RelationService} from "../service/relation.service";
 
 declare var LeaderLine: any;
 
+enum LinesState {
+  INIT,
+  CLEANING,
+  DRAWING,
+  DONE
+}
 
 @Component({
     selector: 'app-event',
@@ -23,7 +29,7 @@ export class EventComponent implements AfterViewChecked {
     selectedPerson: Person | null = null;
     relations: Relation[] = [];
     lines: typeof LeaderLine[] = [];
-    updateLines: boolean = false;
+    updateLines: LinesState = LinesState.INIT;
 
     selectedPersonDiv: EventTarget | null = null;
     @ViewChild('otherPeopleDiv') otherPeopleDiv: ElementRef<HTMLDivElement> | undefined;
@@ -35,16 +41,13 @@ export class EventComponent implements AfterViewChecked {
         this.route.params.subscribe((params: { [x: string]: number | null; }) => {
             this.id = params['id'];
             this.eventService.getEvent(this.id!).subscribe(event => {
-                console.log(event);
                 this.event = event;
             });
             this.peopleService.getPeople(this.id!).subscribe(people => {
-                console.log(people);
                 this.people = people;
                 this.otherPeople = [];
             });
             this.relationService.getRelations(this.id!).subscribe(relations => {
-                console.log(relations);
                 this.relations = relations;
             });
         });
@@ -61,35 +64,37 @@ export class EventComponent implements AfterViewChecked {
         this.selectedPerson = person;
         this.selectedPersonDiv = event.target;
         this.otherPeople = this.people.filter(p => p.id !== person.id);
-        this.updateLines = true;
+        this.updateLines = LinesState.CLEANING;
     }
 
     drawLines() {
+      if (this.updateLines == LinesState.CLEANING) {
         this.lines.forEach(line => line.remove());
         this.lines = [];
+        this.updateLines = LinesState.DRAWING;
+        setTimeout(() => this.drawLines(), 0);
+      } else if (this.updateLines == LinesState.DRAWING) {
         const otherPeopleDivs = this.otherPeopleDiv?.nativeElement.children;
         if (!otherPeopleDivs || this.selectedPersonDiv === null) {
-            console.log('otherPeopleDivs or selectedPersonDiv is null');
-            return;
+          return;
         }
         for (let i = 0; i < otherPeopleDivs.length; i++) {
-            const otherPersonDiv = otherPeopleDivs[i];
-            const line = new LeaderLine(
-                this.selectedPersonDiv,
-                otherPersonDiv,
-                {
-                    endPlugOutline: false,
-                    animOptions: {duration: 3000, timing: 'linear'}
-                });
-            this.lines.push(line);
+          const otherPersonDiv = otherPeopleDivs[i];
+          const line = new LeaderLine(
+            this.selectedPersonDiv,
+            otherPersonDiv,
+            {
+              endPlugOutline: false,
+              animOptions: {duration: 3000, timing: 'linear'}
+            });
+          this.lines.push(line);
         }
+        this.updateLines = LinesState.DONE;
+      }
     }
 
     ngAfterViewChecked() {
-        if (this.updateLines) {
-            this.drawLines();
-            this.updateLines = false;
-        }
+      this.drawLines();
     }
 
     getRelationsFor(person: Person) {
