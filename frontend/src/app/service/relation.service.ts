@@ -13,7 +13,7 @@ export class RelationService {
     return this.http.get<Relation[]>(`http://localhost:8080/api/event/${eventId}/relation`, { withCredentials: true });
   }
 
-  createRelation(eventId: number, person1: string, person2: string) {
-    return this.http.post<Relation>(`http://localhost:8080/api/event/${eventId}/relation`, { eventId, person1, person2}, { withCredentials: true });
+  createRelation(eventId: number, person1: number, person2: number, relationStrength: number) {
+    return this.http.post<Relation>(`http://localhost:8080/api/event/${eventId}/relation`, { eventId, person1, person2, relationStrength}, { withCredentials: true });
   }
 }

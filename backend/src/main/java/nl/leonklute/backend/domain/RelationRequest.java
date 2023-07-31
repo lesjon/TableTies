@@ -6,9 +6,9 @@ import lombok.Data;
 @Data
 public class RelationRequest {
 
-    private String person1;
+    private Integer person1;
 
-    private String person2;
+    private Integer person2;
 
     private Double relationStrength;
 

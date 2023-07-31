@@ -13,4 +13,6 @@ import java.util.Optional;
 public interface PersonRepository extends JpaRepository<Person, Integer> {
     Optional<Person> getByName(String name);
     List<Person> findAllByEvent(Event event);
+
+    Optional<Person> findById(Integer integer);
 }

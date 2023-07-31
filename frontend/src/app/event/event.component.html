@@ -1,20 +1,17 @@
 <div class="main-container">
   <section class="card-container">
     <mat-card *ngFor="let person of people" (click)="selectPerson(person, $event)" class="card">
-      <mat-card-content>{{person.name}}</mat-card-content>
+      <mat-card-content [id]="'person-'+person.id" >{{person.name}}</mat-card-content>
     </mat-card>
-    <mat-card class="card">
-      <mat-card-content>
-        <mat-form-field>
-          <input matInput #nameInput placeholder="Name">
-        </mat-form-field>
-        <button (click)="addPerson(nameInput)" mat-raised-button>Add</button>
-      </mat-card-content>
-    </mat-card>
+    <form (ngSubmit)="addPerson(nameInput)" >
+      <mat-form-field (submit)="addPerson(nameInput)" style="width: 300px">
+        <input matInput #nameInput placeholder="Add person" >
+      </mat-form-field>
+    </form>
   </section>
 
   <section #otherPeopleDiv class="card-container">
-    <mat-card *ngFor="let person of otherPeople" class="card">
+    <mat-card *ngFor="let person of otherPeople" [id]="'other-person-'+person.id" (mouseup)="addRelation(person)" class="card">
       <mat-card-content>{{person.name}}</mat-card-content>
     </mat-card>
   </section>

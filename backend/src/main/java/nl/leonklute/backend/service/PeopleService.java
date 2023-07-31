@@ -62,4 +62,8 @@ public class PeopleService {
     public Optional<Person> getPersonByName(String name) {
         return personRepository.getByName(name);
     }
+
+    public Optional<Person> getPersonById(Integer personId) {
+        return personRepository.findById(personId);
+    }
 }

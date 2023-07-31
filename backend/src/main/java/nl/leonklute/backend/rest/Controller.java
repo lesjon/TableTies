@@ -93,7 +93,7 @@ public class Controller {
     }
 
     @PostMapping(value = "/event/{eventId}/compute", produces = "application/json")
-    public List<Integer> createRelation(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer eventId) {
+    public List<Integer> computeTableGroups(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer eventId) {
         var user = getKeycloakUser(userDetails);
         Event event = eventService.getEvent(eventId).orElseThrow(() -> new RuntimeException("Event does not exist"));
         validateEvent(event, user);
@@ -139,10 +139,11 @@ public class Controller {
         validateRelation(relationRequest, event);
         var relation = new Relation();
         relation.setEvent(event);
-        relation.setPerson1(peopleService.getPersonByName(relationRequest.getPerson1())
+        relation.setPerson1(peopleService.getPersonById(relationRequest.getPerson1())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("%s not found", relationRequest.getPerson1()))));
-        relation.setPerson2(peopleService.getPersonByName(relationRequest.getPerson2())
+        relation.setPerson2(peopleService.getPersonById(relationRequest.getPerson2())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("%s not found", relationRequest.getPerson2()))));
+        relation.setRelationStrength(relationRequest.getRelationStrength());
         return relationService.create(relation);
     }
 
