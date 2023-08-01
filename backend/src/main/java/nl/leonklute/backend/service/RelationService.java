@@ -51,6 +51,12 @@ public class RelationService {
         }
     }
 
+    public Relation createOrUpdate(Relation relation) {
+        var strength = relation.getRelationStrength();
+        relation = relationRepository.findByPerson1AndPerson2AndEvent(relation.getPerson1(), relation.getPerson2(), relation.getEvent()).orElse(relation);
+        relation.setRelationStrength(strength);
+        return relationRepository.save(relation);
+    }
     public Relation create(Relation relation) {
         return relationRepository.save(relation);
     }

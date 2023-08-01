@@ -1,18 +1,50 @@
 <div class="main-container">
   <section class="card-container">
-    <mat-card *ngFor="let person of people" (click)="selectPerson(person, $event)" class="card">
-      <mat-card-content [id]="'person-'+person.id" >{{person.name}}</mat-card-content>
-    </mat-card>
-    <form (ngSubmit)="addPerson(nameInput)" >
+    <form (ngSubmit)="addPerson(nameInput)">
       <mat-form-field (submit)="addPerson(nameInput)" style="width: 300px">
-        <input matInput #nameInput placeholder="Add person" >
+        <input matInput #nameInput placeholder="Add person">
+      </mat-form-field>
+    </form>
+    <mat-card *ngFor="let person of people" (click)="selectPerson(person, $event)" class="card">
+      <div class="card-content">
+        <button mat-icon-button color="warn" (click)="deletePerson(person)">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <mat-card-content [id]="'person-'+person.id">
+          {{person.name}}
+        </mat-card-content>
+      </div>
+    </mat-card>
+  </section>
+  <section class="card-container">
+    <form>
+      <mat-form-field style="margin: auto 0">
+        <mat-label>
+          Relation strength
+        </mat-label>
+        <mat-select #relationStrength>
+          <mat-option *ngFor="let r of [-5,-4,-3,-2,-1,0,1,2,3,4,5]" [value]="r">
+            {{r}}
+            <mat-icon *ngIf="r > 0" style="color: #0F0">remove</mat-icon>
+            <mat-icon *ngIf="r < 0" style="color: #F00">remove</mat-icon>
+          </mat-option>
+        </mat-select>
       </mat-form-field>
     </form>
   </section>
-
   <section #otherPeopleDiv class="card-container">
-    <mat-card *ngFor="let person of otherPeople" [id]="'other-person-'+person.id" (mouseup)="addRelation(person)" class="card">
-      <mat-card-content>{{person.name}}</mat-card-content>
+    <h2>Relation to</h2>
+    <mat-card *ngFor="let person of otherPeople" [id]="'other-person-'+person.id"
+              (mouseup)="addRelation(person, relationStrength.value)" class="card">
+      <div class="card-content">
+        <mat-card-content>{{person.name}}</mat-card-content>
+      </div>
     </mat-card>
+    <mat-card *ngIf="otherPeople.length === 0" class="card">
+      <mat-card-content class="mat-body-1">Select person</mat-card-content>
+    </mat-card>
+  </section>
+  <section class="card-container">
+    <app-group-table *ngIf="id" [eventId]="id"/>
   </section>
 </div>

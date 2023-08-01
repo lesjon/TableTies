@@ -6,6 +6,8 @@ import {UserService} from "../service/user.service";
 import {Router} from "@angular/router";
 import {MatTabChangeEvent} from '@angular/material/tabs';
 import {Subscription} from "rxjs";
+import {MatDialog} from "@angular/material/dialog";
+import {LogoutDialogComponent} from "../logout-dialog/logout-dialog.component";
 
 
 @Component({
@@ -13,14 +15,30 @@ import {Subscription} from "rxjs";
   templateUrl: './tool-bar.component.html',
   styleUrls: ['./tool-bar.component.css']
 })
-export class ToolBarComponent implements OnInit, OnDestroy{
+export class ToolBarComponent implements OnInit, OnDestroy {
   events: Event[] = [];
   user: KeycloakUser | null = null;
   private subscription: Subscription | null = null;
-  selected = 0;
+
   constructor(private eventService: EventService,
               private userService: UserService,
-              private router: Router) {
+              private router: Router,
+              public dialog: MatDialog) {
+  }
+
+  logout() {
+    if(!this.user) {
+      this.router.navigate(['login']);
+      return;
+    }
+    const dialogRef = this.dialog.open(LogoutDialogComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.userService.logout().subscribe(() => {
+          this.userService.clear();
+        });
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -30,21 +48,13 @@ export class ToolBarComponent implements OnInit, OnDestroy{
       this.getEvents();
     });
   }
+
   ngOnDestroy(): void {
     this.subscription?.unsubscribe();
-  }
-  toggleSidenav() {
-    console.log("Toggle Sidenav");
   }
 
   getEvents() {
     this.eventService.getEvents().subscribe(events => this.events = events);
-  }
-
-  toggleUserMenu() {
-    if(!this.user){
-      this.router.navigate(['login']);
-    }
   }
 
   urlFromEvent(event: Event) {

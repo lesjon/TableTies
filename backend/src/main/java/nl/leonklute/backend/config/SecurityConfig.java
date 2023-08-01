@@ -34,7 +34,7 @@ class SecurityConfig {
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests
                                 .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                                .requestMatchers("/login", "/register").permitAll()
+                                .requestMatchers("/login", "/logout", "/register").permitAll()
                                 .requestMatchers("/api/**").authenticated()
 
                 )
@@ -49,6 +49,11 @@ class SecurityConfig {
                     });
                     formLogin.failureHandler((request, response, exception) -> {
                         response.setStatus(401);
+                    });
+                })
+                .logout(logout -> {
+                    logout.logoutSuccessHandler((request, response, authentication) -> {
+                        response.setStatus(200);
                     });
                 });
         return http.build();
@@ -65,12 +70,14 @@ class SecurityConfig {
         configuration.setAllowCredentials(true);
         source.registerCorsConfiguration("/api/**", configuration);
 
-        CorsConfiguration loginConfiguration = new CorsConfiguration();
-        loginConfiguration.setAllowedOrigins(List.of("http://localhost:4200"));
-        loginConfiguration.setAllowedMethods(List.of("POST", "OPTIONS"));
-        loginConfiguration.setAllowedHeaders(List.of("*"));
-        loginConfiguration.setAllowCredentials(true);
-        source.registerCorsConfiguration("/login", loginConfiguration);
+        CorsConfiguration loginoutConfiguration = new CorsConfiguration();
+        loginoutConfiguration.setAllowedOrigins(List.of("http://localhost:4200"));
+        loginoutConfiguration.setAllowedMethods(List.of("POST", "OPTIONS"));
+        loginoutConfiguration.setAllowedHeaders(List.of("*"));
+        loginoutConfiguration.setAllowCredentials(true);
+        source.registerCorsConfiguration("/login", loginoutConfiguration);
+        source.registerCorsConfiguration("/logout", loginoutConfiguration);
+        source.registerCorsConfiguration("/register", loginoutConfiguration);
         return source;
     }
 

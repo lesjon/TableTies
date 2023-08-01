@@ -1,34 +1,42 @@
-<div class="container">
+<div class="container" style="max-width: 500px; margin: auto;">
   <div [hidden]="submitted">
-    <h1>New Event</h1>
-    <form (ngSubmit)="onSubmit()" #heroForm="ngForm">
-      <div class="form-group">
-        <label for="name">Event Name</label>
-        <input type="text" class="form-control" id="name"
-               required
-               [(ngModel)]="model.name" name="name"
-               #name="ngModel">
-        <div [hidden]="name.valid || name.pristine"
-             class="alert alert-danger">
-          Name is required
-        </div>
-      </div>
-
-
-      <button type="submit" class="btn btn-success" [disabled]="!heroForm.form.valid">Submit</button>
-      <button type="button" class="btn btn-default" (click)="clear(); heroForm.reset()">Clear</button>
-    </form>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>New Event</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form (ngSubmit)="onSubmit()" #eventForm="ngForm">
+          <mat-form-field appearance="fill">
+            <mat-label>Event Name</mat-label>
+            <input matInput required [(ngModel)]="model.name" name="name" #name="ngModel">
+            <mat-error *ngIf="name.invalid && name.touched">
+              Name is required
+            </mat-error>
+          </mat-form-field>
+          <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+            <button mat-raised-button color="primary" type="submit" [disabled]="!eventForm.form.valid">Submit</button>
+            <button mat-raised-button color="accent" type="button" (click)="clear(); eventForm.reset()">Clear</button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
   </div>
 
   <div [hidden]="!submitted">
-    <h2>You submitted the following:</h2>
-    <div class="row">
-      <div class="col-xs-3">Name</div>
-      <div class="col-xs-9">{{ model.name }}</div>
-    </div>
-    <div class="row">
-      <div class="col-xs-3">User</div>
-      <div class="col-xs-9">{{ model.user }}</div>
-    </div>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Submission Details</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="row">
+          <div class="col-xs-3"><strong>Name:</strong></div>
+          <div class="col-xs-9">{{ model.name }}</div>
+        </div>
+        <div class="row">
+          <div class="col-xs-3"><strong>User:</strong></div>
+          <div class="col-xs-9">{{ model.user }}</div>
+        </div>
+      </mat-card-content>
+    </mat-card>
   </div>
 </div>

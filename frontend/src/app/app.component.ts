@@ -1,4 +1,7 @@
 import {Component} from '@angular/core';
+import {MatDialog} from "@angular/material/dialog";
+import {LogoutDialogComponent} from "./logout-dialog/logout-dialog.component";
+import {UserService} from "./service/user.service";
 
 @Component({
   selector: 'app-root',
@@ -7,5 +10,6 @@ import {Component} from '@angular/core';
 })
 export class AppComponent {
   title = 'frontend';
+
 }
 

@@ -43,7 +43,10 @@ CREATE TABLE table_ties.relation (
     event_id INTEGER NOT NULL,
     FOREIGN KEY (person1_id) REFERENCES table_ties.person (id),
     FOREIGN KEY (person2_id) REFERENCES table_ties.person (id),
-    FOREIGN KEY (event_id) REFERENCES table_ties.event (id)
+    FOREIGN KEY (event_id) REFERENCES table_ties.event (id),
+    CONSTRAINT person1_person2_unique UNIQUE (person1_id, person2_id),
+    CONSTRAINT person1_person2_different CHECK (person1_id <> person2_id),
+    CONSTRAINT person1_less_than_person2 CHECK (person1_id < person2_id)
 );
 GRANT ALL PRIVILEGES ON TABLE table_ties.relation TO table_ties;
 

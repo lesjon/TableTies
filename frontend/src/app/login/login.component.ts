@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { UserForm } from "../form/UserForm";
 import KeycloakUser from "../domain/KeycloakUser";
 import {UserService} from "../service/user.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -14,11 +14,7 @@ export class LoginComponent {
   loggedInUser?: KeycloakUser = undefined;
   failureMessage?: string = undefined;
   onSubmit() {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });    let body = new URLSearchParams();
-    body.set('username', this.model.username);
-    body.set('password', this.model.password);
-    return this.http.post<any>('http://localhost:8080/login', body.toString(), { headers: headers, withCredentials: true })
-      .subscribe({
+    this.userService.login(this.model.username, this.model.password).subscribe({
         next: data => {
           this.getLoggedInUser();
         },
@@ -28,7 +24,8 @@ export class LoginComponent {
         }
       });
   }
-  constructor(private http: HttpClient, private userService: UserService) { }
+
+  constructor(private userService: UserService, private router: Router) { }
 
   getLoggedInUser() {
     this.userService.getUser()
@@ -36,5 +33,9 @@ export class LoginComponent {
         next: data => this.loggedInUser = data,
         error: error => this.loggedInUser = undefined,
       });
+  }
+
+  goToRegister() {
+    this.router.navigate(['register']);
   }
 }

@@ -16,9 +16,9 @@ mat-card {
   text-align: center;
   margin-top: 1em;
 }
+
 .form-actions {
   display: flex;
   justify-content: space-around;
-  align-items: center;
   margin-top: 1em;
 }

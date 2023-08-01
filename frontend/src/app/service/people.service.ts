@@ -16,4 +16,8 @@ export class PeopleService {
   createPerson(eventId: number, name: string) {
     return this.http.post<Person>(`http://localhost:8080/api/event/${eventId}/person`, { eventId, name }, { withCredentials: true });
   }
+
+  deletePerson(eventId: number, person: Person) {
+    return this.http.delete<Person>(`http://localhost:8080/api/event/${eventId}/person/${person.id}`, { withCredentials: true });
+  }
 }

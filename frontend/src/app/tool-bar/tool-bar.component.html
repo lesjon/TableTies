@@ -1,20 +1,21 @@
 <mat-toolbar>
-  <button mat-icon-button (click)="$event.stopPropagation(); toggleSidenav()">
-    <mat-icon>menu</mat-icon>
-  </button>
   <a routerLink="">
     <img src="../../assets/TableTies-256x256.png" alt="table ties" width="40px"/>
   </a>
   <span>Table Ties</span>
   <span class="spacer"></span>
-  <mat-tab-group (selectedTabChange)="onTabChange($event)">
+  <mat-tab-group *ngIf="user" (selectedTabChange)="onTabChange($event)">
     <mat-tab *ngFor="let event of events" [label]="event.name"/>
-    <mat-tab label="new"/>
+    <mat-tab label="new">
+      <ng-template mat-tab-label>
+        <mat-icon>add_circle</mat-icon>
+      </ng-template>
+    </mat-tab>
   </mat-tab-group>
   <span class="spacer"></span>
   <div>
     <span *ngIf="user">{{user.username}}</span>
-    <button mat-icon-button (click)="$event.stopPropagation(); toggleUserMenu()">
+    <button mat-icon-button (click)="$event.stopPropagation(); logout()">
       <mat-icon>account_circle</mat-icon>
     </button>
   </div>

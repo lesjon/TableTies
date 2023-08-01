@@ -17,6 +17,11 @@ import { HomeComponent } from './home/home.component';
 import { EventComponent } from './event/event.component';
 import {MatCardModule} from "@angular/material/card";
 import {MatInputModule} from "@angular/material/input";
+import {MatSelectModule} from "@angular/material/select";
+import { GroupTableComponent } from './group-table/group-table.component';
+import { LogoutDialogComponent } from './logout-dialog/logout-dialog.component';
+import {MatDialogModule} from "@angular/material/dialog";
+import { RegisterComponent } from './register/register.component';
 
 @NgModule({
   declarations: [
@@ -26,19 +31,24 @@ import {MatInputModule} from "@angular/material/input";
     NewEventComponent,
     LoginComponent,
     HomeComponent,
-    EventComponent
+    EventComponent,
+    GroupTableComponent,
+    LogoutDialogComponent,
+    RegisterComponent
   ],
-  imports: [
-    MaterialModule,
-    BrowserModule,
-    NgOptimizedImage,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    FormsModule,
-    AppRoutingModule,
-    MatCardModule,
-    MatInputModule
-  ],
+    imports: [
+        MaterialModule,
+        BrowserModule,
+        NgOptimizedImage,
+        HttpClientModule,
+        BrowserAnimationsModule,
+        FormsModule,
+        AppRoutingModule,
+        MatCardModule,
+        MatInputModule,
+        MatSelectModule,
+        MatDialogModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

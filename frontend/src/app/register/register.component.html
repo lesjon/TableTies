@@ -2,10 +2,10 @@
   <div>
     <mat-card>
       <mat-card-header>
-        <mat-card-title>Login</mat-card-title>
+        <mat-card-title>Register</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+        <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
           <mat-form-field appearance="fill">
             <mat-label>Username</mat-label>
             <input matInput type="text" required [(ngModel)]="model.username" name="username" #username="ngModel">
@@ -17,10 +17,9 @@
             <mat-error *ngIf="password.invalid && password.touched">Password is required</mat-error>
           </mat-form-field>
           <div class="form-actions">
-            <button mat-raised-button color="primary" type="button" (click)="goToRegister()">Go to register</button>
-            <button mat-raised-button color="accent" type="submit" [disabled]="!loginForm.form.valid">Login</button>
+            <button mat-raised-button color="primary" type="button" (click)="goToLogin()">Login instead</button>
+            <button mat-raised-button color="accent" type="submit" [disabled]="!registerForm.form.valid">Register</button>
           </div>
-
         </form>
       </mat-card-content>
     </mat-card>

@@ -66,4 +66,14 @@ public class PeopleService {
     public Optional<Person> getPersonById(Integer personId) {
         return personRepository.findById(personId);
     }
+
+    public void delete(Person person) {
+        personRepository.delete(person);
+    }
+    public Optional<Person> deleteById(Integer personId) {
+        return personRepository.findById(personId).map(person -> {
+            personRepository.delete(person);
+            return person;
+        });
+    }
 }

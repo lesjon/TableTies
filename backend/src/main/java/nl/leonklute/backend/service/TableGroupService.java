@@ -14,6 +14,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TableGroupService {
@@ -55,5 +56,13 @@ public class TableGroupService {
 
     public TableGroup create(TableGroup tableGroup) {
         return tableGroupRepository.save(tableGroup);
+    }
+
+    public Optional<TableGroup> findTableGroupById(Integer tableId) {
+        return tableGroupRepository.findById(tableId);
+    }
+
+    public void delete(Integer tableGroupId) {
+        tableGroupRepository.deleteById(tableGroupId);
     }
 }

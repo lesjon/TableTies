@@ -7,6 +7,7 @@ import nl.leonklute.backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -91,6 +92,18 @@ public class Controller {
         tableGroup.setTarget(tableGroupRequest.getTarget());
         return tableGroupService.create(tableGroup);
     }
+    @DeleteMapping(value = "/event/{eventId}/table/{tableId}")
+    public void deleteTable(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer eventId, @PathVariable Integer tableId) {
+        var user = getKeycloakUser(userDetails);
+        Event event = getEventById(eventId);
+        validateEvent(event, user);
+        TableGroup tableGroup = getTableGroupById(tableId);
+        tableGroupService.delete(tableGroup.getId());
+    }
+
+    private TableGroup getTableGroupById(Integer tableId) {
+        return tableGroupService.findTableGroupById(tableId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Table not found"));
+    }
 
     @PostMapping(value = "/event/{eventId}/compute", produces = "application/json")
     public List<Integer> computeTableGroups(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer eventId) {
@@ -123,6 +136,18 @@ public class Controller {
         return peopleService.create(person);
     }
 
+    @DeleteMapping(value = "/event/{eventId}/person/{personId}")
+    public void deletePerson(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer eventId, @PathVariable Integer personId) {
+        var user = getKeycloakUser(userDetails);
+        Event event = getEventById(eventId);
+        validateEvent(event, user);
+        Person person = peopleService.getPersonById(personId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        if (!person.getEvent().equals(event)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        peopleService.delete(person);
+    }
+
     @GetMapping(value = "/event/{eventId}/relation", produces = "application/json")
     public List<Relation> getRelations(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer eventId) {
         var user = getKeycloakUser(userDetails);
@@ -139,12 +164,14 @@ public class Controller {
         validateRelation(relationRequest, event);
         var relation = new Relation();
         relation.setEvent(event);
-        relation.setPerson1(peopleService.getPersonById(relationRequest.getPerson1())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("%s not found", relationRequest.getPerson1()))));
-        relation.setPerson2(peopleService.getPersonById(relationRequest.getPerson2())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("%s not found", relationRequest.getPerson2()))));
+        var personId1 = relationRequest.getPerson1() < relationRequest.getPerson2() ? relationRequest.getPerson1() : relationRequest.getPerson2();
+        var personId2 = relationRequest.getPerson1() < relationRequest.getPerson2() ? relationRequest.getPerson2() : relationRequest.getPerson1();
+        relation.setPerson1(peopleService.getPersonById(personId1)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("%s not found", personId1))));
+        relation.setPerson2(peopleService.getPersonById(personId2)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("%s not found", personId2))));
         relation.setRelationStrength(relationRequest.getRelationStrength());
-        return relationService.create(relation);
+        return relationService.createOrUpdate(relation);
     }
 
     private KeycloakUser getKeycloakUser(UserDetails userDetails) {

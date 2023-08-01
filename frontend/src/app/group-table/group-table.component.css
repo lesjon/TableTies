@@ -1,8 +1,6 @@
-.main-container {
+.card-content {
   display: flex;
   justify-content: space-between;
-  align-content: start;
-  gap: 20px;
 }
 
 .card-container {
@@ -11,14 +9,4 @@
   flex-wrap: wrap;
   gap: 10px;
   margin: 10px 0 0 10px;
-}
-
-.card {
-  width: 300px;
-}
-
-.card-content {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
 }

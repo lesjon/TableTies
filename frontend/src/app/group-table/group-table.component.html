@@ -1,0 +1,24 @@
+<div class="card-container">
+  <form (submit)="addGroup(capacity.value, target.value)">
+    <mat-form-field>
+      <input matInput type="number" placeholder="Target" #target>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput type="number" placeholder="Capacity" #capacity>
+    </mat-form-field>
+    <button mat-raised-button type="submit" color="primary">Add Table</button>
+  </form>
+  <mat-card *ngFor="let group of groups">
+    <mat-card-content class="card-content">
+    <span>
+      {{ group.target }}
+    </span>
+    <span>
+      {{ group.capacity }}
+    </span>
+      <button mat-icon-button color="warn" (click)="deleteGroup(group.id)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-card-content>
+  </mat-card>
+</div>

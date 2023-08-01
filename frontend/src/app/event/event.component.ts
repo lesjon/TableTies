@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewChecked, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {EventService} from '../service/event.service';
 import Event from '../domain/Event';
@@ -21,8 +21,8 @@ enum LinesState {
   templateUrl: './event.component.html',
   styleUrls: ['./event.component.css']
 })
-export class EventComponent implements AfterViewChecked {
-  private id: number | null = null;
+export class EventComponent implements AfterViewChecked, OnDestroy{
+  id: number | null = null;
   event: Event | null = null;
   people: Person[] = [];
   otherPeople: Person[] = [];
@@ -47,15 +47,18 @@ export class EventComponent implements AfterViewChecked {
         this.people = people;
         this.otherPeople = [];
       });
-      this.relationService.getRelations(this.id!).subscribe(relations => {
-        this.relations = relations;
-      });
+      this.updateRelations();
     });
+  }
+
+  ngOnDestroy(): void {
+    this.lines.forEach(line => line.remove());
   }
 
   addPerson(name: HTMLInputElement) {
     this.peopleService.createPerson(this.id!, name.value).subscribe(person => {
       this.people.push(person);
+      this.otherPeople.push(person);
       name.value = '';
     });
   }
@@ -79,11 +82,12 @@ export class EventComponent implements AfterViewChecked {
         console.warn('no other people divs');
         return;
       }
-      if(this.selectedPersonDiv === null){
+      if (this.selectedPersonDiv === null) {
         console.warn('no selected person div');
+        this.updateLines = LinesState.DONE;
         return;
       }
-      if(this.selectedPerson === null){
+      if (this.selectedPerson === null) {
         console.warn('no selected person');
         return;
       }
@@ -91,17 +95,17 @@ export class EventComponent implements AfterViewChecked {
         const otherPersonDiv = otherPeopleDivs[i];
         console.debug('drawing line from', this.selectedPersonDiv, 'to', otherPersonDiv);
         const otherPersonId = this.getPersonIdFromHtmlId(otherPersonDiv.id);
-        if(!otherPersonId){
+        if (!otherPersonId) {
           console.warn('Could not parse other person id from html id:', otherPersonDiv.id);
           continue;
         }
         const otherPerson = this.people.find(p => p.id === parseInt(otherPersonId));
-        if(!otherPerson){
+        if (!otherPerson) {
           console.warn('no other person found with id:', otherPersonId);
           continue;
         }
         const relation = this.getRelationFor(this.selectedPerson, otherPerson);
-        if(!relation){
+        if (!relation) {
           console.debug('no relation found', this.selectedPerson, otherPerson);
           continue;
         }
@@ -112,6 +116,8 @@ export class EventComponent implements AfterViewChecked {
             size: Math.abs(relation.relationStrength),
             endPlugOutline: false,
             color: relation.relationStrength > 0 ? '#0F0' : '#F00',
+            endPlug: 'disc',
+            startPlug: 'disc',
           });
         this.lines.push(line);
       }
@@ -133,12 +139,42 @@ export class EventComponent implements AfterViewChecked {
     return htmlId.split('person-').pop();
   }
 
-  addRelation(person: Person) {
-    if(!this.selectedPerson){
+  addRelation(person: Person, relationStrengthInput: string | undefined) {
+    if (!this.selectedPerson) {
       console.warn('no selected person to create relation with');
       return;
     }
-    this.relationService.createRelation(this.id!, this.selectedPerson.id, person.id, 3)
-      .subscribe(relation => { this.relations.push(relation); });
+    if (!relationStrengthInput) {
+      console.warn('no relation strength');
+      return;
+    }
+    const relationStrength = parseInt(relationStrengthInput);
+    if (isNaN(relationStrength)) {
+      console.warn('relation strength is not a number');
+      return;
+    }
+    console.log('creating relation', this.selectedPerson.id, person.id, relationStrength);
+    this.relationService.createRelation(this.id!, this.selectedPerson.id, person.id, relationStrength)
+      .subscribe(relation => {
+        this.updateRelations();
+      });
   }
+
+  private updateRelations() {
+    this.relationService.getRelations(this.id!).subscribe(relations => {
+      this.relations = relations;
+      this.updateLines = LinesState.CLEANING;
+      this.drawLines();
+    });
+  }
+
+  deletePerson(person: Person) {
+    this.peopleService.deletePerson(this.id!, person).subscribe(() => {
+      this.people = this.people.filter(p => p.id !== person.id);
+      this.otherPeople = this.otherPeople.filter(p => p.id !==person.id);
+      this.updateRelations();
+    });
+  }
+
+  protected readonly Math = Math;
 }

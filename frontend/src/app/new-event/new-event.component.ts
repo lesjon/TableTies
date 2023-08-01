@@ -1,5 +1,4 @@
 import {Component} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
 import {EventForm} from "../form/EventForm";
 import {UserService} from "../service/user.service";
 import {mergeMap} from "rxjs";
@@ -13,8 +12,7 @@ import {EventService} from "../service/event.service";
 export class NewEventComponent {
   model = new EventForm('', '');
   submitted = false;
-  constructor(private http: HttpClient,
-              private userService: UserService,
+  constructor(private userService: UserService,
               private eventService: EventService) { }
   onSubmit() {
     if(this.model.user == '') {
