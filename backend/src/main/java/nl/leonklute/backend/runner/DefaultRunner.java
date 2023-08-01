@@ -18,7 +18,6 @@ public class DefaultRunner implements ApplicationRunner {
     private final TableGroupService tableGroupService;
     private final EventService eventService;
 
-//    @Autowired
     public DefaultRunner(KeycloakUserService keycloakUserService, PeopleService peopleService,
                          RelationService relationService, TableSetter tableSetter, TableGroupService tableGroupService, EventService eventService) {
         this.keycloakUserService = keycloakUserService;

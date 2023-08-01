@@ -1,5 +1,5 @@
-import {AfterViewChecked, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {AfterViewChecked, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {EventService} from '../service/event.service';
 import Event from '../domain/Event';
 import {PeopleService} from "../service/people.service";
@@ -21,7 +21,7 @@ enum LinesState {
   templateUrl: './event.component.html',
   styleUrls: ['./event.component.css']
 })
-export class EventComponent implements AfterViewChecked, OnDestroy{
+export class EventComponent implements OnInit, AfterViewChecked, OnDestroy{
   id: number | null = null;
   event: Event | null = null;
   people: Person[] = [];
@@ -37,9 +37,19 @@ export class EventComponent implements AfterViewChecked, OnDestroy{
   constructor(private route: ActivatedRoute,
               private eventService: EventService,
               private peopleService: PeopleService,
-              private relationService: RelationService) {
+              private relationService: RelationService,
+              private router: Router) {
+  }
+
+  ngOnInit(): void {
     this.route.params.subscribe((params: { [x: string]: number | null; }) => {
       this.id = params['id'];
+      if(this.id === null || this.id === undefined) {
+        this.eventService.getEvents().subscribe(events => {
+          this.router.navigate([events[0].id], {relativeTo: this.route});
+        });
+        return;
+      }
       this.eventService.getEvent(this.id!).subscribe(event => {
         this.event = event;
       });
@@ -49,12 +59,16 @@ export class EventComponent implements AfterViewChecked, OnDestroy{
       });
       this.updateRelations();
     });
+
   }
 
   ngOnDestroy(): void {
     this.lines.forEach(line => line.remove());
   }
 
+  ngAfterViewChecked() {
+    this.drawLines();
+  }
   addPerson(name: HTMLInputElement) {
     this.peopleService.createPerson(this.id!, name.value).subscribe(person => {
       this.people.push(person);
@@ -125,9 +139,6 @@ export class EventComponent implements AfterViewChecked, OnDestroy{
     }
   }
 
-  ngAfterViewChecked() {
-    this.drawLines();
-  }
 
   getRelationFor(person1: Person, person2: Person) {
     return this.relations
@@ -159,15 +170,6 @@ export class EventComponent implements AfterViewChecked, OnDestroy{
         this.updateRelations();
       });
   }
-
-  private updateRelations() {
-    this.relationService.getRelations(this.id!).subscribe(relations => {
-      this.relations = relations;
-      this.updateLines = LinesState.CLEANING;
-      this.drawLines();
-    });
-  }
-
   deletePerson(person: Person) {
     this.peopleService.deletePerson(this.id!, person).subscribe(() => {
       this.people = this.people.filter(p => p.id !== person.id);
@@ -176,5 +178,11 @@ export class EventComponent implements AfterViewChecked, OnDestroy{
     });
   }
 
-  protected readonly Math = Math;
+  private updateRelations() {
+    this.relationService.getRelations(this.id!).subscribe(relations => {
+      this.relations = relations;
+      this.updateLines = LinesState.CLEANING;
+      this.drawLines();
+    });
+  }
 }

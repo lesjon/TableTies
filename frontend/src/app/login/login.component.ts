@@ -17,6 +17,7 @@ export class LoginComponent {
     this.userService.login(this.model.username, this.model.password).subscribe({
         next: data => {
           this.getLoggedInUser();
+          this.router.navigate(['/event']);
         },
         error: error => {
           console.log(error);

@@ -36,6 +36,7 @@ export class ToolBarComponent implements OnInit, OnDestroy {
       if (result) {
         this.userService.logout().subscribe(() => {
           this.userService.clear();
+          this.router.navigate(['login']);
         });
       }
     });

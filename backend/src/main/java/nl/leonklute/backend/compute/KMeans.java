@@ -15,7 +15,7 @@ class KMeans {
         initCentroids();
     }
 
-    // You'll need a method to initialize the centroids at random points
+    // initialize the centroids at random points
     public void initCentroids() {
         centroids = new double[numClusters][numDimensions];
         Random rand = new Random();
@@ -26,7 +26,7 @@ class KMeans {
         }
     }
 
-    // This method will assign each data point to the nearest centroid
+    // assign each data point to the nearest centroid
     public int[] assignToClusters() {
         int[] assignments = new int[data.length];
         for (int i = 0; i < data.length; i++) {
@@ -47,7 +47,7 @@ class KMeans {
     }
 
 
-    // This method will recompute the centroids based on the current cluster assignments
+    // recompute the centroids based on the current cluster assignments
     public void updateCentroids(int[] assignments) {
         int[] counts = new int[numClusters];
         Random rand = new Random();
