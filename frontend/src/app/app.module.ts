@@ -22,6 +22,8 @@ import { GroupTableComponent } from './group-table/group-table.component';
 import { LogoutDialogComponent } from './logout-dialog/logout-dialog.component';
 import {MatDialogModule} from "@angular/material/dialog";
 import { RegisterComponent } from './register/register.component';
+import {MatListModule} from "@angular/material/list";
+import {MatLineModule} from "@angular/material/core";
 
 @NgModule({
   declarations: [
@@ -36,19 +38,21 @@ import { RegisterComponent } from './register/register.component';
     LogoutDialogComponent,
     RegisterComponent
   ],
-    imports: [
-        MaterialModule,
-        BrowserModule,
-        NgOptimizedImage,
-        HttpClientModule,
-        BrowserAnimationsModule,
-        FormsModule,
-        AppRoutingModule,
-        MatCardModule,
-        MatInputModule,
-        MatSelectModule,
-        MatDialogModule
-    ],
+  imports: [
+    MaterialModule,
+    BrowserModule,
+    NgOptimizedImage,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    FormsModule,
+    AppRoutingModule,
+    MatCardModule,
+    MatInputModule,
+    MatSelectModule,
+    MatDialogModule,
+    MatListModule,
+    MatLineModule
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })

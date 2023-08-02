@@ -10,3 +10,10 @@
   gap: 10px;
   margin: 10px 0 0 10px;
 }
+.table-form {
+  width: 100%;
+}
+
+.full-width-input {
+  width: 40%;
+}

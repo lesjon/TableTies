@@ -22,11 +22,11 @@
         <mat-label>
           Relation strength
         </mat-label>
-        <mat-select #relationStrength>
-          <mat-option *ngFor="let r of [-5,-4,-3,-2,-1,0,1,2,3,4,5]" [value]="r">
-            {{r}}
-            <mat-icon *ngIf="r > 0" style="color: #0F0">remove</mat-icon>
-            <mat-icon *ngIf="r < 0" style="color: #F00">remove</mat-icon>
+        <mat-select #relationStrength
+                    [ngStyle]="relationStrengthToStyle(relationStrength.value)">
+          <mat-option *ngFor="let r of [5,-5,4,-4,3,-3,2,-2,1,-1,0]"
+                      [value]="r" [ngStyle]="relationStrengthToStyle(r)">
+            -
           </mat-option>
         </mat-select>
       </mat-form-field>

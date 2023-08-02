@@ -21,7 +21,7 @@ enum LinesState {
   templateUrl: './event.component.html',
   styleUrls: ['./event.component.css']
 })
-export class EventComponent implements OnInit, AfterViewChecked, OnDestroy{
+export class EventComponent implements OnInit, AfterViewChecked, OnDestroy {
   id: number | null = null;
   event: Event | null = null;
   people: Person[] = [];
@@ -44,7 +44,7 @@ export class EventComponent implements OnInit, AfterViewChecked, OnDestroy{
   ngOnInit(): void {
     this.route.params.subscribe((params: { [x: string]: number | null; }) => {
       this.id = params['id'];
-      if(this.id === null || this.id === undefined) {
+      if (this.id === null || this.id === undefined) {
         this.eventService.getEvents().subscribe(events => {
           this.router.navigate([events[0].id], {relativeTo: this.route});
         });
@@ -68,6 +68,13 @@ export class EventComponent implements OnInit, AfterViewChecked, OnDestroy{
 
   ngAfterViewChecked() {
     this.drawLines();
+  }
+
+  relationStrengthToStyle(relationStrength: number|undefined) {
+    if(relationStrength === undefined || relationStrength == 0) {
+      return {color: 'black', fontWeight: 'normal'};
+    }
+    return {color: relationStrength > 0 ? '#00FF00' : '#FF0000', 'font-size': Math.abs(relationStrength) + 'em'};
   }
   addPerson(name: HTMLInputElement) {
     this.peopleService.createPerson(this.id!, name.value).subscribe(person => {
@@ -123,13 +130,22 @@ export class EventComponent implements OnInit, AfterViewChecked, OnDestroy{
           console.debug('no relation found', this.selectedPerson, otherPerson);
           continue;
         }
+        let color;
+        let size;
+        if (relation.relationStrength === 0) {
+          color = '#000';
+          size = 1;
+        } else {
+          color = relation.relationStrength > 0 ? '#0F0' : '#F00';
+          size = Math.abs(relation.relationStrength);
+        }
         const line = new LeaderLine(
           this.selectedPersonDiv,
           otherPersonDiv,
           {
-            size: Math.abs(relation.relationStrength),
+            size: size,
             endPlugOutline: false,
-            color: relation.relationStrength > 0 ? '#0F0' : '#F00',
+            color: color,
             endPlug: 'disc',
             startPlug: 'disc',
           });
@@ -155,7 +171,7 @@ export class EventComponent implements OnInit, AfterViewChecked, OnDestroy{
       console.warn('no selected person to create relation with');
       return;
     }
-    if (!relationStrengthInput) {
+    if (relationStrengthInput == undefined) {
       console.warn('no relation strength');
       return;
     }
@@ -170,10 +186,11 @@ export class EventComponent implements OnInit, AfterViewChecked, OnDestroy{
         this.updateRelations();
       });
   }
+
   deletePerson(person: Person) {
     this.peopleService.deletePerson(this.id!, person).subscribe(() => {
       this.people = this.people.filter(p => p.id !== person.id);
-      this.otherPeople = this.otherPeople.filter(p => p.id !==person.id);
+      this.otherPeople = this.otherPeople.filter(p => p.id !== person.id);
       this.updateRelations();
     });
   }
@@ -185,4 +202,6 @@ export class EventComponent implements OnInit, AfterViewChecked, OnDestroy{
       this.drawLines();
     });
   }
+
+  protected readonly Math = Math;
 }
