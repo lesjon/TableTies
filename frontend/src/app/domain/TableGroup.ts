@@ -5,4 +5,6 @@ export default interface TableGroup{
   target: number;
   capacity: number;
   event: Event;
+  centroid: number[];
+  assignedPeople: number[];
 }

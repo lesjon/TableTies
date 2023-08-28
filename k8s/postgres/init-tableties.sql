@@ -30,6 +30,7 @@ CREATE TABLE table_ties.person (
     id SERIAL PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     event_id INTEGER NOT NULL,
+    table_group_id INTEGER,
     FOREIGN KEY (event_id) REFERENCES table_ties.event (id)
 );
 GRANT ALL PRIVILEGES ON TABLE table_ties.person TO table_ties;

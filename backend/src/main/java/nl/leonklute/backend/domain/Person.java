@@ -16,4 +16,8 @@ public class Person {
     @ManyToOne
     @JoinColumn(name = "event_id")
     private Event event;
+
+    @ManyToOne
+    @JoinColumn(name = "table_group_id", nullable = true)
+    private TableGroup tableGroup;
 }

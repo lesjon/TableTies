@@ -90,6 +90,9 @@ public class Controller {
         tableGroup.setEvent(event);
         tableGroup.setCapacity(tableGroupRequest.getCapacity());
         tableGroup.setTarget(tableGroupRequest.getTarget());
+        if(tableGroup.getCapacity() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Capacity is required");
+        }
         return tableGroupService.create(tableGroup);
     }
     @DeleteMapping(value = "/event/{eventId}/table/{tableId}")

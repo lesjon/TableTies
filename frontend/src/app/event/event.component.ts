@@ -46,7 +46,10 @@ export class EventComponent implements OnInit, AfterViewChecked, OnDestroy {
       this.id = params['id'];
       if (this.id === null || this.id === undefined) {
         this.eventService.getEvents().subscribe(events => {
-          this.router.navigate([events[0].id], {relativeTo: this.route});
+          const firstEvent = events.at(0);
+          if (firstEvent) {
+            this.router.navigate([firstEvent.id], {relativeTo: this.route});
+          }
         });
         return;
       }

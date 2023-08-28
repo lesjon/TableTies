@@ -1,7 +1,7 @@
 .main-container {
   display: flex;
   justify-content: space-between;
-  align-content: start;
+  align-content: flex-start;
   gap: 20px;
 }
 
