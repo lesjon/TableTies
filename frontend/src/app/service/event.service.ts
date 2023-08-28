@@ -21,4 +21,8 @@ export class EventService {
   getEvent(id: number) {
     return this.http.get<Event>(`http://localhost:8080/api/event/${id}`, { withCredentials: true });
   }
+
+  recompute(id: number) {
+    return this.http.post<any[]>(`http://localhost:8080/api/event/${id}/compute`, {}, { withCredentials: true });
+  }
 }

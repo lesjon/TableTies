@@ -24,6 +24,7 @@ import {MatDialogModule} from "@angular/material/dialog";
 import { RegisterComponent } from './register/register.component';
 import {MatListModule} from "@angular/material/list";
 import {MatLineModule} from "@angular/material/core";
+import { TableGroupingComponent } from './table-grouping/table-grouping.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import {MatLineModule} from "@angular/material/core";
     EventComponent,
     GroupTableComponent,
     LogoutDialogComponent,
-    RegisterComponent
+    RegisterComponent,
+    TableGroupingComponent
   ],
   imports: [
     MaterialModule,

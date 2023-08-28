@@ -6,6 +6,7 @@ import {HomeComponent} from "../home/home.component";
 import {EventComponent} from "../event/event.component";
 import {RegisterComponent} from "../register/register.component";
 import {PeopleListComponent} from "../people-list/people-list.component";
+import {TableGroupingComponent} from "../table-grouping/table-grouping.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -14,6 +15,7 @@ const routes: Routes = [
   {path: 'event', component: EventComponent},
   {path: 'event/create', component: NewEventComponent},
   {path: 'event/:id/people', component: PeopleListComponent},
+  {path: 'event/:id/result', component: TableGroupingComponent},
   {path: 'event/:id', component: EventComponent},
 ];
 

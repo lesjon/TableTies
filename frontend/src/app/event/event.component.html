@@ -1,11 +1,14 @@
 <div class="main-container">
+  <a mat-fab routerLink="result" class="fab-main">
+    <mat-icon class="mat-18">published_with_changes</mat-icon>
+  </a>
   <section class="card-container">
     <form (ngSubmit)="addPerson(nameInput)">
       <mat-form-field (submit)="addPerson(nameInput)" style="width: 300px">
         <input matInput #nameInput placeholder="Add person">
       </mat-form-field>
     </form>
-    <mat-card *ngFor="let person of people" (click)="selectPerson(person, $event)" class="card">
+    <mat-card *ngFor="let person of people" (mousedown)="selectPerson(person, $event)" class="card">
       <div class="card-content">
         <button mat-icon-button color="warn" (click)="deletePerson(person)">
           <mat-icon>delete</mat-icon>

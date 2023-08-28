@@ -76,4 +76,8 @@ public class PeopleService {
             return person;
         });
     }
+
+    public Person update(Person person) {
+        return personRepository.save(person);
+    }
 }

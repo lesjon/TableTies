@@ -1,0 +1,22 @@
+<div>
+  <button mat-fab (click)="recompute()" class="fab-main">
+    <mat-icon class="mat-18">published_with_changes</mat-icon>
+  </button>
+  <div>
+    <h1>
+      resulting grouping
+    </h1>
+    <div *ngFor="let group of groups" class="card-container">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Table id:{{group.tableGroup.id}} capacity:{{group.tableGroup.capacity}}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngFor="let person of group.people">
+            <h2>{{person.name}}</h2>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

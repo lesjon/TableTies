@@ -117,6 +117,13 @@ public class Controller {
         List<Relation> relations = relationService.getAllRelationsByUser(event);
         List<TableGroup> tables = tableGroupService.getAllTablesByEvent(event);
         int[] groups = tableSetter.createTables(people, relations, tables);
+        if(groups == null || groups.length != people.size()) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong");
+        }
+        for(int i = 0; i < groups.length; i++) {
+            people.get(i).setTableGroup(tables.get(groups[i]));
+            peopleService.update(people.get(i));
+        }
         return Arrays.stream(groups).boxed().toList();
     }
 

@@ -79,6 +79,7 @@ export class EventComponent implements OnInit, AfterViewChecked, OnDestroy {
     }
     return {color: relationStrength > 0 ? '#00FF00' : '#FF0000', 'font-size': Math.abs(relationStrength) + 'em'};
   }
+
   addPerson(name: HTMLInputElement) {
     this.peopleService.createPerson(this.id!, name.value).subscribe(person => {
       this.people.push(person);
