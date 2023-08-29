@@ -10,12 +10,12 @@
     </form>
     <mat-card *ngFor="let person of people" (mousedown)="selectPerson(person, $event)" class="card">
       <div class="card-content">
-        <button mat-icon-button color="warn" (click)="deletePerson(person)">
-          <mat-icon>delete</mat-icon>
-        </button>
         <mat-card-content [id]="'person-'+person.id">
           {{person.name}}
         </mat-card-content>
+        <button mat-icon-button *ngIf="person.id === selectedPerson?.id" color="warn" (click)="deletePerson(person)" (mousedown)="$event.stopPropagation()">
+          <mat-icon>delete</mat-icon>
+        </button>
       </div>
     </mat-card>
   </section>
