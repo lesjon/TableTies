@@ -46,4 +46,8 @@ export class UserService {
   clear() {
     this.userSubject.next(null);
   }
+
+  register(username: string, password: string) {
+    return this.http.post<any>('http://localhost:8080/register', {username: username, password: password});
+  }
 }

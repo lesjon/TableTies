@@ -14,8 +14,8 @@ export class RegisterComponent {
   loggedInUser?: KeycloakUser = undefined;
   failureMessage?: string = undefined;
   onSubmit() {
-    this.userService.login(this.model.username, this.model.password).subscribe({
-      next: data => {
+    this.userService.register(this.model.username, this.model.password).subscribe({
+      next: () => {
         this.router.navigate(['login']);
       },
       error: error => {

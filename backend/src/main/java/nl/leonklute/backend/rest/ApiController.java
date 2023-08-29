@@ -7,7 +7,6 @@ import nl.leonklute.backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,7 +17,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("api")
-public class Controller {
+public class ApiController {
     private final KeycloakUserService keycloakUserService;
     private final TableGroupService tableGroupService;
     private final PeopleService peopleService;
@@ -27,7 +26,7 @@ public class Controller {
     private final TableSetter tableSetter;
 
     @Autowired
-    public Controller(KeycloakUserService keycloakUserService, TableGroupService tableGroupService, PeopleService peopleService, RelationService relationService, EventService eventService, TableSetter tableSetter) {
+    public ApiController(KeycloakUserService keycloakUserService, TableGroupService tableGroupService, PeopleService peopleService, RelationService relationService, EventService eventService, TableSetter tableSetter) {
         this.keycloakUserService = keycloakUserService;
         this.tableGroupService = tableGroupService;
         this.peopleService = peopleService;
