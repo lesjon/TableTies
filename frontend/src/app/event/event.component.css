@@ -22,9 +22,3 @@
   width: 100%;
   justify-content: space-between;
 }
-.fab-main {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 100;
-}

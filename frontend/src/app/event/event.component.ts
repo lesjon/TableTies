@@ -19,7 +19,7 @@ enum LinesState {
 @Component({
   selector: 'app-event',
   templateUrl: './event.component.html',
-  styleUrls: ['./event.component.css']
+  styleUrls: ['./event.component.css', '../app.component.css']
 })
 export class EventComponent implements OnInit, AfterViewChecked, OnDestroy {
   id: number | null = null;

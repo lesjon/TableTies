@@ -12,7 +12,7 @@ interface TableGroupWithPeople {
 @Component({
   selector: 'app-table-grouping',
   templateUrl: './table-grouping.component.html',
-  styleUrls: ['./table-grouping.component.css']
+  styleUrls: ['./table-grouping.component.css', '../app.component.css']
 })
 export class TableGroupingComponent implements OnInit {
   id: number | null = null;

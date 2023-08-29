@@ -1,17 +1,21 @@
-.fab-main {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    margin: 30px;
-    z-index: 100;
-}
+
 .card-container {
   display: flex;
-  flex-direction: row;
+  justify-content: space-between;
   flex-wrap: wrap;
+  /*flex-direction: row;*/
 }
 
 mat-card {
-  margin: 10px; /* or any desired spacing */
-  width: 40ch;
+  flex: 0 1 calc(33.333% - 20px); /* assuming you want 3 cards per row, and adjusting for a 20px gap */
+  margin: 10px; /* half of the gap */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+}
+
+.header-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
